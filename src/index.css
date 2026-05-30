@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 240 25% 4%;
+    --foreground: 240 10% 96%;
+    --card: 240 20% 6%;
+    --card-foreground: 240 10% 96%;
+    --popover: 240 20% 6%;
+    --popover-foreground: 240 10% 96%;
+    --primary: 160 80% 50%;
+    --primary-foreground: 240 25% 4%;
+    --secondary: 240 15% 12%;
+    --secondary-foreground: 240 10% 96%;
+    --muted: 240 15% 15%;
+    --muted-foreground: 240 10% 55%;
+    --accent: 200 75% 55%;
+    --accent-foreground: 240 25% 4%;
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 15% 15%;
+    --input: 240 15% 15%;
+    --ring: 160 80% 50%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .glass-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 24px;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .glass-panel:hover {
+    box-shadow: 0px 0px 30px rgba(50, 255, 150, 0.08);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+
+  .glass-card {
+    background: rgba(255, 255, 255, 0.025);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    transition: all 0.2s ease-out;
+  }
+
+  .glass-card:hover {
+    background: rgba(255, 255, 255, 0.04);
+    border-color: rgba(50, 255, 150, 0.15);
+    box-shadow: 0px 0px 20px rgba(50, 255, 150, 0.06);
+  }
+
+  .glass-button {
+    background: linear-gradient(135deg, rgba(50, 255, 150, 0.15), rgba(50, 200, 200, 0.1));
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(50, 255, 150, 0.25);
+    border-radius: 9999px;
+    color: #33ff99;
+    transition: all 0.3s ease;
+  }
+
+  .glass-button:hover {
+    background: linear-gradient(135deg, rgba(50, 255, 150, 0.25), rgba(50, 200, 200, 0.18));
+    box-shadow: 0px 0px 20px rgba(50, 255, 150, 0.25);
+    transform: translateY(-1px);
+  }
+
+  .glass-button:active {
+    transform: translateY(0px);
+  }
+
+  .glass-input {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+  }
+
+  .glass-input:focus {
+    outline: none;
+    border-color: rgba(50, 255, 150, 0.4);
+    box-shadow: 0px 0px 15px rgba(50, 255, 150, 0.1);
+    background: rgba(255, 255, 255, 0.06);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, #33ff99, #33ccdd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .glow-green {
+    box-shadow: 0px 0px 20px rgba(51, 255, 153, 0.4);
+  }
+
+  .glow-cyan {
+    box-shadow: 0px 0px 20px rgba(51, 204, 221, 0.3);
+  }
+
+  .overlay-grain {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    pointer-events: none;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+  }
+
+  .recording-dot {
+    animation: pulse-red 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-red {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 9999px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}
