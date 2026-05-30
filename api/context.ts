@@ -1,6 +1,8 @@
 import type { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import type { User } from "@db/schema";
-import { authenticateRequest } from "./kimi/auth";
+import { users } from "@db/schema";
+import { getDb } from "./queries/connection";
+import { eq } from "drizzle-orm";
 
 export type TrpcContext = {
   req: Request;
@@ -13,9 +15,20 @@ export async function createContext(
 ): Promise<TrpcContext> {
   const ctx: TrpcContext = { req: opts.req, resHeaders: opts.resHeaders };
   try {
-    ctx.user = await authenticateRequest(opts.req.headers);
-  } catch {
-    // Authentication is optional here
+    const db = getDb();
+    let userRow = await db.select().from(users).where(eq(users.id, 1)).limit(1);
+    if (!userRow[0]) {
+      await db.insert(users).values({
+        id: 1,
+        unionId: "mock-user-id",
+        name: "Cat Lover",
+        role: "admin",
+      });
+      userRow = await db.select().from(users).where(eq(users.id, 1)).limit(1);
+    }
+    ctx.user = userRow[0];
+  } catch (err) {
+    console.error("Failed to authenticate request with mock user:", err);
   }
   return ctx;
 }

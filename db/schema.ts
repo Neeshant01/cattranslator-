@@ -1,7 +1,6 @@
 import {
   mysqlTable,
   mysqlEnum,
-  serial,
   varchar,
   text,
   timestamp,
@@ -13,7 +12,7 @@ import {
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
-  id: serial("id").primaryKey(),
+  id: bigint("id", { mode: "number", unsigned: true }).primaryKey().autoincrement(),
   unionId: varchar("unionId", { length: 255 }).notNull().unique(),
   name: varchar("name", { length: 255 }),
   email: varchar("email", { length: 320 }),
@@ -54,7 +53,7 @@ export const contextEnum = [
 ] as const;
 
 export const catProfiles = mysqlTable("catProfiles", {
-  id: serial("id").primaryKey(),
+  id: bigint("id", { mode: "number", unsigned: true }).primaryKey().autoincrement(),
   userId: bigint("userId", { mode: "number", unsigned: true })
     .notNull()
     .references(() => users.id),
@@ -76,7 +75,7 @@ export type CatProfile = typeof catProfiles.$inferSelect;
 export type InsertCatProfile = typeof catProfiles.$inferInsert;
 
 export const translations = mysqlTable("translations", {
-  id: serial("id").primaryKey(),
+  id: bigint("id", { mode: "number", unsigned: true }).primaryKey().autoincrement(),
   userId: bigint("userId", { mode: "number", unsigned: true })
     .notNull()
     .references(() => users.id),
@@ -103,7 +102,7 @@ export type Translation = typeof translations.$inferSelect;
 export type InsertTranslation = typeof translations.$inferInsert;
 
 export const humanToCatTranslations = mysqlTable("humanToCatTranslations", {
-  id: serial("id").primaryKey(),
+  id: bigint("id", { mode: "number", unsigned: true }).primaryKey().autoincrement(),
   userId: bigint("userId", { mode: "number", unsigned: true })
     .notNull()
     .references(() => users.id),
@@ -119,7 +118,7 @@ export type HumanToCatTranslation = typeof humanToCatTranslations.$inferSelect;
 export type InsertHumanToCatTranslation = typeof humanToCatTranslations.$inferInsert;
 
 export const trainingSamples = mysqlTable("trainingSamples", {
-  id: serial("id").primaryKey(),
+  id: bigint("id", { mode: "number", unsigned: true }).primaryKey().autoincrement(),
   translationId: bigint("translationId", { mode: "number", unsigned: true })
     .notNull()
     .references(() => translations.id),
@@ -136,7 +135,7 @@ export type TrainingSample = typeof trainingSamples.$inferSelect;
 export type InsertTrainingSample = typeof trainingSamples.$inferInsert;
 
 export const userSettings = mysqlTable("userSettings", {
-  id: serial("id").primaryKey(),
+  id: bigint("id", { mode: "number", unsigned: true }).primaryKey().autoincrement(),
   userId: bigint("userId", { mode: "number", unsigned: true })
     .notNull()
     .unique()
