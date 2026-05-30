@@ -70,6 +70,12 @@ export const translationRouter = createRouter({
         catProfileId: z.number().optional(),
         audioBase64: z.string().optional(),
         durationMs: z.number().min(100).max(60000),
+        pitch: z.number().optional(),
+        volume: z.number().optional(),
+        noisiness: z.number().optional(),
+        tailState: z.string().optional(),
+        earState: z.string().optional(),
+        posture: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -97,11 +103,79 @@ export const translationRouter = createRouter({
         "physicalState",
       ] as const;
 
-      const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
-      const randomIntensity = intensities[Math.floor(Math.random() * intensities.length)];
-      const randomUrgency = urgencies[Math.floor(Math.random() * urgencies.length)];
-      const randomContext = contexts[Math.floor(Math.random() * contexts.length)];
-      const confidence = (Math.random() * 30 + 70).toFixed(2);
+      let primaryEmotion: typeof emotions[number] = "greeting";
+      let intensity: typeof intensities[number] = "medium";
+      let urgency: typeof urgencies[number] = "casual";
+      let context: typeof contexts[number] = "social";
+      let confidenceScore = "85.00";
+
+      const pitch = input.pitch ?? 350;
+      const volume = input.volume ?? 50;
+      const noisiness = input.noisiness ?? 10;
+      
+      const tail = input.tailState ?? "up";
+      const ears = input.earState ?? "forward";
+      const body = input.posture ?? "relaxed";
+
+      if (noisiness > 45) {
+        primaryEmotion = "angry";
+        intensity = "high";
+        urgency = "urgent";
+        context = "threatResponse";
+        confidenceScore = (85 + Math.random() * 10).toFixed(2);
+      } else if (pitch < 120) {
+        if (body === "relaxed" && tail === "up") {
+          primaryEmotion = "happy";
+          intensity = "low";
+          urgency = "casual";
+          context = "social";
+        } else {
+          primaryEmotion = "scared";
+          intensity = "medium";
+          urgency = "moderate";
+          context = "threatResponse";
+        }
+        confidenceScore = (80 + Math.random() * 15).toFixed(2);
+      } else if (pitch > 650) {
+        primaryEmotion = "inPain";
+        intensity = "high";
+        urgency = "urgent";
+        context = "physicalState";
+        confidenceScore = (90 + Math.random() * 8).toFixed(2);
+      } else {
+        if (body === "tense" || ears === "back") {
+          primaryEmotion = "scared";
+          intensity = "high";
+          urgency = "urgent";
+          context = "threatResponse";
+        } else if (tail === "puffed") {
+          primaryEmotion = "territorial";
+          intensity = "high";
+          urgency = "urgent";
+          context = "threatResponse";
+        } else if (volume > 70) {
+          primaryEmotion = "hungry";
+          intensity = "high";
+          urgency = "moderate";
+          context = "foodRelated";
+        } else if (tail === "twitching") {
+          primaryEmotion = "playful";
+          intensity = "medium";
+          urgency = "casual";
+          context = "social";
+        } else if (ears === "forward" && tail === "up") {
+          primaryEmotion = "greeting";
+          intensity = "low";
+          urgency = "casual";
+          context = "social";
+        } else {
+          primaryEmotion = "demand";
+          intensity = "medium";
+          urgency = "moderate";
+          context = "attentionSeeking";
+        }
+        confidenceScore = (80 + Math.random() * 12).toFixed(2);
+      }
 
       const emotionLabels: Record<string, string> = {
         hungry: "Check food bowl or feed",
@@ -120,17 +194,17 @@ export const translationRouter = createRouter({
         userId: ctx.user.id,
         catProfileId: input.catProfileId,
         audioUrl: input.audioBase64 ? "audio://recording" : undefined,
-        primaryEmotion: randomEmotion,
-        intensity: randomIntensity,
-        urgency: randomUrgency,
-        context: randomContext,
-        confidenceScore: confidence,
+        primaryEmotion,
+        intensity,
+        urgency,
+        context,
+        confidenceScore,
         secondarySignals: {
-          tail: ["up", "down", "twitching"][Math.floor(Math.random() * 3)],
-          ears: ["forward", "flattened", "swiveling"][Math.floor(Math.random() * 3)],
-          body: ["relaxed", "tense", "crouching"][Math.floor(Math.random() * 3)],
+          tail,
+          ears,
+          body,
         },
-        suggestedAction: emotionLabels[randomEmotion],
+        suggestedAction: emotionLabels[primaryEmotion],
         durationMs: input.durationMs,
       });
 
